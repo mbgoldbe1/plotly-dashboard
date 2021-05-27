@@ -1,13 +1,15 @@
 function buildMetadata(sample) {
+    console.log(sample)
 d3.json("samples.json").then((data) => {
     var metadata= data.metadata;
     var resultsarray= metadata.filter(sampleobject =>
         sampleobject.id == sample);
+    console.log(resultsarray)
     var result= resultsarray[0]
     var panel = d3.select("#sample-metadata");
     panel.html("");
     Object.entries(result).forEach(([key, value]) => {
-        panel.append("h6").text('${key}: ${value}');
+        panel.append("p").text(key + ':' + value);
     });
 
 });
@@ -69,20 +71,20 @@ function buildCharts(sample) {
      
     
     function init() {
-    // Grab a reference to the dropdown select element
-    var selector = d3.select("#selDataset");
+    // drop down
+    var dropdownMenu = d3.select("#selDataset");
     
-    // Use the list of sample names to populate the select options
+    // sample names to populate drop down
     d3.json("samples.json").then((data) => {
       var sampleNames = data.names;
       sampleNames.forEach((sample) => {
-        selector
+        dropdownMenu
           .append("option")
           .text(sample)
           .property("value", sample);
       });
     
-      // Use the first sample from the list to build the initial plots
+      // use first sample to build the initial plots
       const firstSample = sampleNames[0];
       buildCharts(firstSample);
       buildMetadata(firstSample);
@@ -90,7 +92,7 @@ function buildCharts(sample) {
     }
     
     function optionChanged(newSample) {
-    // Fetch new data each time a new sample is selected
+    // fetch new data each time new sample is selected
     buildCharts(newSample);
     buildMetadata(newSample);
     }
